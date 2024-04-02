@@ -22,11 +22,11 @@ router.post('/', async function (req, res, next) {
   try {
     var newAuthor = new authorModel({
       name: req.body.name
-    })
+    });
     await newAuthor.save();
-    ResHelper.RenderRes(res, true, newAuthor)
+    ResHelper.RenderRes(res, true, newAuthor);
   } catch (error) {
-    ResHelper.RenderRes(res, false, error)
+    ResHelper.RenderRes(res, false, error);
   }
 });
 // router.put('/:id', async function (req, res, next) {
@@ -41,7 +41,18 @@ router.post('/', async function (req, res, next) {
 //   }
 // });
 
-
+router.put('/:id', async function (req, res, next) {
+  try {
+      let updatedAuthor = await authorModel.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
+      if (updatedAuthor) {
+          ResHelper.RenderRes(res, true, updatedAuthor);
+      } else {
+          ResHelper.RenderRes(res, false, "Author not found");
+      }
+  } catch (error) {
+      ResHelper.RenderRes(res, false, error);
+  }
+});
 // router.delete('/:id', async function (req, res, next) {
 //   try {
 //     let book = await bookModel.findByIdAndUpdate
@@ -55,5 +66,18 @@ router.post('/', async function (req, res, next) {
 //     ResHelper.RenderRes(res, false, error)
 //   }
 // });
+
+router.delete('/:id', async function (req, res, next) {
+  try {
+      let deletedAuthor = await authorModel.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }).exec();
+      if (deletedAuthor) {
+          ResHelper.RenderRes(res, true, deletedAuthor);
+      } else {
+          ResHelper.RenderRes(res, false, "Author not found");
+      }
+  } catch (error) {
+      ResHelper.RenderRes(res, false, error);
+  }
+});
 
 module.exports = router;
